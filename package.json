@@ -2,9 +2,9 @@
   "name": "render-learning",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -13,9 +13,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/Rajithiruppathi/render-learning/issues"
-  },
-  "homepage": "https://github.com/Rajithiruppathi/render-learning#readme"
+  "dependencies": {
+    "express": "^5.2.1"
+  }
 }
