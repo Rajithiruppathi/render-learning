@@ -3,45 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eKigai Simulator</title>
+    <title>eKigai Automation Simulator</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f7f6; }
-        button { padding: 12px 24px; font-size: 16px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        #output { margin-top: 30px; padding: 15px; border-radius: 5px; display: inline-block; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: none; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 40px 20px; background-color: #f8fafc; color: #1e293b; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 600px; width: 100%; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
+        h1 { font-size: 24px; color: #0f172a; margin-bottom: 8px; }
+        p { color: #64748b; font-size: 14px; margin-bottom: 24px; }
+        button { padding: 12px 24px; font-size: 15px; font-weight: 600; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; width: 100%; }
+        button:hover { background-color: #1d4ed8; }
+        button:disabled { background-color: #93c5fd; cursor: not-allowed; }
+        
+        /* Structured Metric Dashboard Layout */
+        .dashboard { margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 24px; text-align: left; display: none; }
+        .dashboard-title { font-size: 16px; font-weight: 600; color: #334155; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .metric-card { background: #f1f5f9; padding: 12px 16px; border-radius: 6px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .metric-label { font-size: 13px; color: #64748b; font-weight: 500; }
+        .metric-value { font-size: 14px; color: #0f172a; font-weight: 600; }
+        .status-badge { background-color: #dcfce7; color: #15803d; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
     </style>
 </head>
 <body>
 
-    <h1>eKigai Automation Simulator</h1>
-    <p>Click the button below to trigger the background data validation pipeline.</p>
-    
-    <button id="validateBtn">Trigger Validation Pipeline</button>
+    <div class="container">
+        <h1>eKigai Automation Simulator</h1>
+        <p>Trigger the dynamic backend architecture to simulate background data validation and credit tracking metrics.</p>
+        
+        <button id="validateBtn">Trigger Validation Pipeline</button>
 
-    <div id="output">
-        <h3>📊 Pipeline Output:</h3>
-        <pre id="jsonData"></pre>
+        <div class="dashboard" id="pipelineDashboard">
+            <div class="dashboard-title">📊 Production Pipeline Metrics</div>
+            
+            <div class="metric-card">
+                <span class="metric-label">Pipeline Status</span>
+                <span class="metric-value status-badge" id="statusVal">Active</span>
+            </div>
+            
+            <div class="metric-card">
+                <span class="metric-label">Credits Deducted</span>
+                <span class="metric-value" id="creditsVal" style="color: #dc2626;">0</span>
+            </div>
+            
+            <div class="metric-card">
+                <span class="metric-label">Target Audience Data</span>
+                <span class="metric-value" id="audienceVal">-</span>
+            </div>
+            
+            <div class="metric-card">
+                <span class="metric-label">Last Execution Timestamp</span>
+                <span class="metric-value" id="timeVal" style="font-family: monospace; font-size: 12px;">-</span>
+            </div>
+        </div>
     </div>
 
     <script>
         document.getElementById('validateBtn').addEventListener('click', async () => {
             const btn = document.getElementById('validateBtn');
-            const outputDiv = document.getElementById('output');
-            const jsonPre = document.getElementById('jsonData');
+            const dashboard = document.getElementById('pipelineDashboard');
 
-            btn.innerText = "Processing in Background...";
+            btn.innerText = "Processing in Background (3s)...";
             btn.disabled = true;
 
             try {
-                // Call our live server backend endpoint
                 const response = await fetch('/trigger-validation');
                 const data = await response.json();
                 
-                // Render the output directly to the screen
-                jsonPre.innerText = JSON.stringify(data, null, 2);
-                outputDiv.style.display = "inline-block";
+                // Map the JSON structure perfectly to clean visual components
+                document.getElementById('statusVal').innerText = data.validatedData.campaignStatus;
+                document.getElementById('creditsVal').innerText = `-${data.creditsDeducted} Credits`;
+                document.getElementById('audienceVal').innerText = data.validatedData.targetAudience;
+                document.getElementById('timeVal').innerText = new Date(data.validatedData.timestamp).toLocaleString();
+                
+                dashboard.style.display = "block";
             } catch (error) {
-                jsonPre.innerText = "Error running background validation.";
+                alert("Error connecting to backend services.");
             } finally {
                 btn.innerText = "Trigger Validation Pipeline";
                 btn.disabled = false;
